@@ -19,8 +19,16 @@ func SignUp(c *gin.Context) {
 	db.InsertOne(newPerson)
 }
 
+func GetAllUsers(c *gin.Context) {
+	db := mydatabase.GetMyDb()
+	defer db.Close()
+	var users []PersonModel.Person = db.FindAll()
+	c.IndentedJSON(http.StatusOK, users)
+}
+
 func main() {
 	r := gin.Default()
 	r.POST("/sign-up", SignUp)
+	r.GET("/users", GetAllUsers)
 	r.Run()
 }
