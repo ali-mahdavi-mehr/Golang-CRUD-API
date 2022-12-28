@@ -1,4 +1,4 @@
-package mydatabase
+package packages
 
 import (
 	"context"
@@ -56,6 +56,20 @@ func (Mongo *MongoClient) FindAll() []PersonModel.Person {
 
 	}
 	return users
+}
+
+func (Mongo *MongoClient) FindOne(name string) PersonModel.Person {
+	collection := Mongo.client.Database(Mongo.DBName).Collection(Mongo.CollectionName)
+
+	//findOptions := options.Find()
+	var user PersonModel.Person
+	filter := bson.D{{"name", name}}
+	err := collection.FindOne(context.TODO(), filter).Decode(&user)
+	if err == mongo.ErrNoDocuments {
+		log.Fatal(err)
+	}
+
+	return user
 }
 
 func (Mongo *MongoClient) Close() {
